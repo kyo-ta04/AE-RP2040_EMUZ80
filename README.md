@@ -1,13 +1,13 @@
 # AE-RP2040_EMUZ80 (English)
 
-![img1](img1.jpg)
+![img1](./img/img1.jpg)
 
 A peripheral and bus emulator for a physical Z80 CPU, designed to run on the Akizuki Denshi AE-RP2040 board.
 
 This project uses the RP2040's PIO (Programmable I/O) subsystem to emulate the memory and I/O devices required to operate a real Z80 microprocessor, allowing the Z80 to run using only the AE-RP2040 board without additional peripheral ICs.
 
-![img2](img2.jpg)
-![img3](img3.jpg)
+![img2](./img/img2.jpg)
+![img3](./img/img3.jpg)
 
 ## Build Requirements
 - Antigravity IDE (Recommended Build Environment)
