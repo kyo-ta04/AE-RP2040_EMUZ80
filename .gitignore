@@ -6,7 +6,7 @@ build/
 .vscode/
 
 # Compiled files
-*.uf2
+#*.uf2
 *.elf
 *.bin
 *.hex
