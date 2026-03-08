@@ -19,9 +19,9 @@ This project uses the RP2040's PIO (Programmable I/O) subsystem to emulate the m
 This project has currently only been built and tested using the **Antigravity IDE**.
 
 1. Open the project in the Antigravity IDE.
-2. Ensure you have configured the environment for the RP2040 (pico/pico2).
+2. Ensure you have configured the environment for the RP2040 (pico).
 3. Run the `/build` slash command to compile the project.
-4. Run the `/flash` slash command to write the compiled `.uf2` file to your Pico.
+4. Run the `/flash` slash command to write the compiled `.uf2` file to your AE-RP2040.
 
 *(Note: Standard CMake/Ninja build flows should theoretically work, but are not officially supported or tested.)*
 
@@ -59,9 +59,9 @@ Therefore, the ROM-BASIC code embedded within this project (`AE-RP2040_EMUZ80.c`
 現在、本プロジェクトのビルドおよび動作確認は **Antigravity IDE** 上でのみ行われています。
 
 1. Antigravity IDE で本プロジェクトを開きます。
-2. RP2040 (pico / pico2) 向けに環境が設定されていることを確認してください。
+2. RP2040 (pico) 向けに環境が設定されていることを確認してください。
 3. `/build` スラッシュコマンドを実行してコンパイルします。
-4. `/flash` スラッシュコマンドを実行して、生成された `.uf2` ファイルを Pico に書き込みます。
+4. `/flash` スラッシュコマンドを実行して、生成された `.uf2` ファイルを AE-RP2040 に書き込みます。
 
 *(注: 通常の CMake/Ninja を用いたビルドも理論上は可能ですが、公式にはサポート（テスト）していません)*
 
