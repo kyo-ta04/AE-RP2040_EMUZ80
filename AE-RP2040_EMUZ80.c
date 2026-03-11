@@ -894,8 +894,8 @@ void __time_critical_func(emu_loop1)(void) {
     uint32_t agpio = *rxfifo;
     uint32_t adrs_word = ((agpio >> 8) & 0x1FFF) | ((agpio >> 14) & 0xE000);
     clk_cnt++;
-    if (!(agpio & mreq_mask)) { // MREQ=0
-      if (!(agpio & wr_mask)) { // MREQ=0 WR=0
+    if (!(agpio & mreq_mask)) { // MREQ=0 メモリアクセス
+      if (!(agpio & wr_mask)) { // MREQ=0, WR=0  Memory-Write
         data_byte = (uint8_t)agpio;
         if (adrs_word == 0xE000) { // UART TX data
           uart_txdata = data_byte;
@@ -903,7 +903,7 @@ void __time_critical_func(emu_loop1)(void) {
         } else if (adrs_word >= 0x8000) {
           memory[adrs_word] = data_byte;
         }
-      } else { // MREQ=0, RD=0
+      } else { // MREQ=0, RD=0  Memory-Read (not Write)
         if (adrs_word == 0xE001) {
           data_byte = uart_stat;
         } else if (adrs_word == 0xE000) {
@@ -914,11 +914,11 @@ void __time_critical_func(emu_loop1)(void) {
         }
         *txfifo = data_byte;
       }
-    } else { // IORQ=0
+    } else { // MREQ=1　I/Oアクセス
       uint ioadrs = adrs_word & 0xFF;
-      if (!(agpio & wr_mask)) { // IORQ=0, WR=0
+      if (!(agpio & wr_mask)) { // MREQ=1, WR=0  I/O-Write (not Memory-access)
         data_byte = (uint8_t)agpio;
-      } else { // IORQ=0, RD=0
+      } else { // MREQ=1, WR=1  I/O-Read (not Memory-access)
         data_byte = (uint8_t)agpio;
         *txfifo = data_byte;
       }
@@ -948,8 +948,8 @@ __attribute__((noinline)) void __time_critical_func(emu_loop2)(void) {
     uint32_t adrs_word = ((agpio >> 8) & 0x1FFF) | ((agpio >> 14) & 0xE000);
 
     clk_cnt++;
-    if (!(agpio & mreq_mask)) { // MREQ=0
-      if (!(agpio & wr_mask)) { // MREQ=0, WR=0
+    if (!(agpio & mreq_mask)) { // MREQ=0 メモリアクセス
+      if (!(agpio & wr_mask)) { // MREQ=0, WR=0  Memory-Write
         data_byte = (uint8_t)agpio;
         if (adrs_word == 0xE000) { // UART TX data
           uart_txdata = data_byte;
@@ -957,7 +957,7 @@ __attribute__((noinline)) void __time_critical_func(emu_loop2)(void) {
         } else if (adrs_word >= 0x8000) {
           memory[adrs_word] = data_byte;
         }
-      } else { // MREQ=0, RD=0
+      } else { // MREQ=0, WR=1  Memory-Read (not Write)
         if (adrs_word == 0xE001) {
           data_byte = uart_stat;
         } else if (adrs_word == 0xE000) {
@@ -968,11 +968,11 @@ __attribute__((noinline)) void __time_critical_func(emu_loop2)(void) {
         }
         pio_sm_put_blocking(pio, sm_emu, data_byte);
       }
-    } else { // IORQ=0
+    } else { // MREQ=1　I/Oアクセス
       uint ioadrs = adrs_word & 0xFF;
-      if (!(agpio & wr_mask)) { // IORQ=0, WR=0
+      if (!(agpio & wr_mask)) { // MREQ=1, WR=0  I/O-Write (not Memory-access)
         data_byte = (uint8_t)agpio;
-      } else { // IORQ=0, RD=0
+      } else { // MREQ=1, WR=1  I/O-Read (not Memory-access)
         data_byte = (uint8_t)agpio;
         pio_sm_put_blocking(pio, sm_emu, data_byte);
       }
