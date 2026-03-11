@@ -1,6 +1,6 @@
 # Build output
-build/
-.cache/
+build*/
+.cache/*
 
 # VS Code settings
 .vscode/
