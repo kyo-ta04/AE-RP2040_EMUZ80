@@ -2,12 +2,46 @@
 
 ![img1](./img/img1.jpg)
 
-A peripheral and bus emulator for a physical Z80 CPU, designed to run on the Akizuki Denshi AE-RP2040 board.
+A peripheral and bus emulator for a physical Z80 CPU, designed to run on RP2040/RP2350 based boards.
 
-This project uses the RP2040's PIO (Programmable I/O) subsystem to emulate the memory and I/O devices required to operate a real Z80 microprocessor, allowing the Z80 to run using only the AE-RP2040 board without additional peripheral ICs.
+This project uses the RP2040/RP2350's PIO (Programmable I/O) subsystem to emulate the memory and I/O devices required to operate a real Z80 microprocessor, allowing the Z80 to run using various RP-series boards without additional peripheral ICs.
 
 ![img2](./img/img2.jpg)
 ![img3](./img/img3.jpg)
+
+## Supported Boards
+- AE-RP2040_EMUZ80 (Akizuki Denshi AE-RP2040)
+- Waveshare RP2350-Zero_EMUZ80 (Waveshare RP2350-Zero)
+- WeAct RP2350B CoreBoard_EMUZ80 (WeAct RP2350B CoreBoard)
+
+## Project Structure
+The source code and configuration for each board are organized within the `boards/` directory:
+- `boards/AE-RP2040/`: For Akizuki AE-RP2040
+- `boards/RP2350-Zero/`: For Waveshare RP2350-Zero
+- `boards/WeAct-RP2350B/`: For WeAct RP2350B CoreBoard
+
+### Pre-built UF2 Files
+Ready-to-flash UF2 files are available in the project root:
+- `AE-RP2040_EMUZ80.uf2` — For Akizuki AE-RP2040
+- `RP2350-Zero_EMUZ80.uf2` — For Waveshare RP2350-Zero
+- `WeAct-RP2350B_EMUZ80.uf2` — For WeAct RP2350B CoreBoard
+
+## Clock Settings
+
+| Board | RP Clock | Z80 Clock |
+|---|---|---|
+| AE-RP2040 | 200 MHz | 2.5 MHz |
+| RP2350-Zero | 150 MHz (default) | 4 MHz |
+| WeAct RP2350B CoreBoard | 150 MHz (default) | 4 MHz |
+
+## Terminal Software Note
+
+For RP2350-based boards, the Z80 runs at 4 MHz, which is relatively fast. When sending data via a terminal application (e.g., TeraTerm), you **must configure a transmit delay** (character or line delay), otherwise characters may be dropped or corrupted.
+
+## Known Issues
+
+- The `/flash` slash command may fail to write the UF2 file correctly in some environments.
+  - **Workaround**: Put the board into BOOTSEL mode, then **drag and drop** the UF2 file directly onto the board's drive in Explorer.
 
 ## Build Requirements
 - Antigravity IDE (Recommended Build Environment)
@@ -19,9 +53,14 @@ This project uses the RP2040's PIO (Programmable I/O) subsystem to emulate the m
 This project has currently only been built and tested using the **Antigravity IDE**.
 
 1. Open the project in the Antigravity IDE.
-2. Ensure you have configured the environment for the RP2040 (pico).
-3. Run the `/build` slash command to compile the project.
-4. Run the `/flash` slash command to write the compiled `.uf2` file to your AE-RP2040.
+2. Select the correct **Pico SDK Board** in the status bar at the bottom:
+   - Select **pico** for RP2040 boards (e.g., AE-RP2040).
+   - Select **waveshare_rp2350_zero** or **weact_studio_rp2350b_core** for RP2350 boards.
+3. Select the target build executable (e.g., `[AE-RP2040_EMUZ80]`) by clicking the **Build** target name in the status bar.
+4. If you have just switched boards, run the `CMake: Configure` command or `Developer: Reload Window` from the Command Palette to ensure the environment is correctly updated.
+5. Run the `/build` slash command to compile.
+6. Run the `/flash` slash command to write the compiled `.uf2` file to your board.
+   - If `/flash` does not work, put the board into BOOTSEL mode and **drag and drop** the `.uf2` file onto the board's drive in Explorer.
 
 *(Note: Standard CMake/Ninja build flows should theoretically work, but are not officially supported or tested.)*
 
@@ -45,9 +84,43 @@ Therefore, the ROM-BASIC code embedded within this project (`AE-RP2040_EMUZ80.c`
 
 # AE-RP2040_EMUZ80 (日本語)
 
-実物の Z80 CPU を秋月電子 AE-RP2040 ボードのみで動かすための周辺回路・バスエミュレータです。
+実物の Z80 CPU を RP2040 または RP2350 搭載ボードで動かすための周辺回路・バスエミュレータです。
 
-ソフトウェアでCPU自体をエミュレーションするのではなく、RP2040 の PIO (プログラマブル I/O) サブシステムを利用してメモリや I/O デバイスをエミュレートし、本物の Z80 マイクロプロセッサを動作させます。
+ソフトウェアでCPU自体をエミュレーションするのではなく、RP2040/RP2350 の PIO (プログラマブル I/O) サブシステムを利用してメモリや I/O デバイスをエミュレートし、本物の Z80 マイクロプロセッサを動作させます。
+
+## 対応ボード
+- AE-RP2040_EMUZ80 (秋月電子 AE-RP2040)
+- Waveshare RP2350-Zero_EMUZ80 (Waveshare RP2350-Zero)
+- WeAct RP2350B CoreBoard_EMUZ80 (WeAct RP2350B CoreBoard)
+
+## プロジェクト構成
+各対応ボードのソースコードと設定ファイルは `boards/` ディレクトリ配下に分かれています。
+- `boards/AE-RP2040/`: 秋月電子 AE-RP2040 用
+- `boards/RP2350-Zero/`: Waveshare RP2350-Zero 用
+- `boards/WeAct-RP2350B/`: WeAct RP2350B CoreBoard 用
+
+### ビルド済み UF2 ファイル
+すぐに書き込んで試せるUF2ファイルをプロジェクトルートに用意しています。
+- `AE-RP2040_EMUZ80.uf2` — 秋月電子 AE-RP2040 用
+- `RP2350-Zero_EMUZ80.uf2` — Waveshare RP2350-Zero 用
+- `WeAct-RP2350B_EMUZ80.uf2` — WeAct RP2350B CoreBoard 用
+
+## クロック設定
+
+| ボード | RPクロック | Z80クロック |
+|---|---|---|
+| AE-RP2040 | 200 MHz | 2.5 MHz |
+| RP2350-Zero | 150 MHz（標準） | 4 MHz |
+| WeAct RP2350B CoreBoard | 150 MHz（標準） | 4 MHz |
+
+## 通信端末ソフトの注意
+
+RP2350 系ボードは Z80 が 4MHz で動作するため、TeraTerm 等の通信端末ソフトから文字を送る際は **送信遅延（文字遅延・行遅延）を設定しないと文字の取りこぼしや誤動作が発生する場合があります**。
+
+## 既知の問題
+
+- `/flash` スラッシュコマンドが正常にUF2ファイルを書き込めない場合があります。
+  - **回避策**: ボードをBOOTSELモードにして、エクスプローラーからUF2ファイルを書き込み先ドライブへ**ドラッグ＆ドロップ**してください。
 
 ## ビルド要件
 - Antigravity IDE (推奨ビルド環境)
@@ -59,9 +132,14 @@ Therefore, the ROM-BASIC code embedded within this project (`AE-RP2040_EMUZ80.c`
 現在、本プロジェクトのビルドおよび動作確認は **Antigravity IDE** 上でのみ行われています。
 
 1. Antigravity IDE で本プロジェクトを開きます。
-2. RP2040 (pico) 向けに環境が設定されていることを確認してください。
-3. `/build` スラッシュコマンドを実行してコンパイルします。
-4. `/flash` スラッシュコマンドを実行して、生成された `.uf2` ファイルを AE-RP2040 に書き込みます。
+2. ステータスバーの右下にある **Pico SDK Board** をクリックして、使用するチップに合わせたボード構成を選択します。
+   - RP2040 ボード（AE-RP2040 など）の場合は **pico** を選択。
+   - RP2350 ボードの場合は **waveshare_rp2350_zero** または **weact_studio_rp2350b_core** を選択。
+3. ステータスバーのターゲット名（例: `[AE-RP2040_EMUZ80]`）をクリックして、ビルド対象の実行ファイルを選択します。
+4. ボード設定やターゲットを切り替えた直後は、必要に応じてコマンドパレットから `CMake: Configure` を実行、または `Developer: Reload Window` を行って環境を最新の状態に更新してください。
+5. `/build` スラッシュコマンドを実行してコンパイルします。
+6. `/flash` スラッシュコマンドを実行して、生成された `.uf2` ファイルをボードに書き込みます。
+   - `/flash` が正常に動作しない場合は、BOOTSELモードでボードを接続し、エクスプローラーから `.uf2` ファイルを**ドラッグ＆ドロップ**してください。
 
 *(注: 通常の CMake/Ninja を用いたビルドも理論上は可能ですが、公式にはサポート（テスト）していません)*
 

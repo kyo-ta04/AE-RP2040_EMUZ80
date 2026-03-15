@@ -1,6 +1,7 @@
 # Build output
 build*/
 .cache/*
+.agents/
 
 # VS Code settings
 .vscode/
