@@ -1,0 +1,36 @@
+; PIO - Z80 Bus Interface for RP2350
+
+.define RD_Pin 21
+
+.program trg_pin
+; RD/WRの立ち下がり(どちらか1ピンのみ)を検出し、IRQ(0)を発生させる
+    wait 1 pin 0          ; RD/WRがHighになるまで待つ
+.wrap_target
+    wait 0 pin 0          ; pin(RD/WR) がLowになるまで待つ
+    irq prev 0            ; トリガ発生(PIO0へ通知)
+    wait 1 pin 0          ; pin(RD/WR) がHighになるまで待つ
+.wrap
+
+.program m_emu
+; バス監視とデータ送受信
+    mov isr, null         ; ISRクリア
+    irq clear 0           ; IRQ 0 クリア 
+.wrap_target
+loop:
+    wait 1 irq 0          ; trg_pin からの通知待ち
+    in pins, 30           ; 全GPIO(0..29)取得して Auto Push
+    jmp pin loop          ; RD(GP21)=1 WRITEなのでloopへ
+    ; --- READ 処理 ---
+    out pins, 8           ; Auto Pullしてデータバス(GP0-7)へ出力
+.wrap
+
+.program d_pindirs
+; RD信号に連動してデータバス(4bit)の方向を切り替える
+    set pindirs, 0        ; 初期状態は入力(Hi-Z)
+    wait 1 gpio RD_Pin    ; RDがHighになるまで待つ
+.wrap_target
+    wait 0 gpio RD_Pin    ; RD が Low になるのを待つ
+    set pindirs, 0xF      ; 出力に切り替え (注: set で指定できるのは5bitまで)
+    wait 1 gpio RD_Pin    ; RD が High に戻るのを待つ
+    set pindirs, 0        ; 入力に戻す
+.wrap
