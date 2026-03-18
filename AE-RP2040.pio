@@ -1,13 +1,13 @@
 ; PIO - Z80 Bus Interface for RP2040
 
-.define RD_Pin 21
+.define RD_Pin 25
 
 .program trg_rw2
 ; RD/WRの立ち下がりを検出し、IRQ(0)を発生させる
 .wrap_target
 loop1:
     mov isr, ! null       ; ISR = 0xFFFFFFFF
-    in pins, 2            ; 引数 in_base で RD(GP21), WR(GP22) を指定
+    in pins, 2            ; 引数 in_base で RD(GP25), WR(GP26) を指定
     mov y, ! isr          ; y = RD/WR 信号の反転 (どちらかがLowならy>0)
     jmp !y loop1          ; y==0 (RD=1, WR=1) ならループ継続。どちらかがLowになるまで待つ
     irq 0                 ; トリガ発生
@@ -25,7 +25,7 @@ loop2:
 loop:
     wait 1 irq 0          ; trg_rw2 からの通知待ち
     in pins, 30           ; 全GPIO(0..29)取得して Auto Push
-    jmp pin loop          ; RD(GP21)=1 WRITEなのでloopへ
+    jmp pin loop          ; RD(GP25)=1 WRITEなのでloopへ
     ; --- READ 処理 ---
     out pins, 8           ; Auto Pullしてデータバス(GP0-7)へ出力
 .wrap
